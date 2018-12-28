@@ -2,7 +2,7 @@ env: &env
   docker:
     - image: circleci/python:2.7.15-node-browsers-legacy
       environment:
-        WHICHPLOTS: 3
+        WHICHPLOTS: 2
 
 version: 2
 jobs:
