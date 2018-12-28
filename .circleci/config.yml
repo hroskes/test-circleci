@@ -7,6 +7,7 @@ env: &env
 version: 2
 jobs:
   plots_ggH:
+    <<: *env
     working_directory: ~/test-ld-pyroot/.circleci
     steps:
       - run:
