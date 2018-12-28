@@ -74,4 +74,4 @@ workflows:
   version: 2
   all-tests:
     jobs:
-      - plots_ggH:
+      - plots_ggH
