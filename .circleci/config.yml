@@ -1,0 +1,77 @@
+env: &env
+  docker:
+    - image: circleci/python:2.7.15-node-browsers-legacy
+      environment:
+        WHICHPLOTS: 4
+
+version: 2
+jobs:
+  plots_ggH:
+    working_directory: ~/test-ld-pyroot/.circleci
+    steps:
+      - run:
+          name: "md5sum of files relevant for analytical plots"
+          command: |
+            cd ..
+            #take the whole MELA C++ code because of interdependencies (TCouplingsBase etc.), too complicated to sort out
+            #but no need for fortran or python
+            md5sum  $(
+              git ls-files \
+                makeplot.py \
+              | sort
+            ) > analytical-md5sum
+      - restore_cache:
+          key: v2-ggH-do-i-need-analytic-plots-1-{{ checksum "analytical-md5sum" }}
+      - restore_cache:
+          key: v2-ggH-do-i-need-analytic-plots-2-{{ checksum "analytical-md5sum" }}
+      - restore_cache:
+          key: v2-ggH-do-i-need-analytic-plots-3-{{ checksum "analytical-md5sum" }}
+      - restore_cache:
+          key: v2-ggH-do-i-need-analytic-plots-4-{{ checksum "analytical-md5sum" }}
+      - run:
+          name: "see if we need ggH analytical plots"
+          command: |
+            DOPLOTS=true
+            if [ "$(cat no-need-for-ggH-plots-$WHICHPLOTS)" ]; then
+              DOPLOTS=false
+            fi
+            echo "export DOPLOTS=$DOPLOTS" >> $BASH_ENV
+      - run:
+          name: plots
+          command: |
+            if $DOPLOTS; then
+              mkdir -p ~/artifacts/ggH
+              python makeplot.py $WHICHPLOTS
+              mv myplot.txt ~/artifacts/ggH
+            else
+              echo "The plots can be found in the artifacts at $(cat no-need-for-ggH-plots-$WHICHPLOTS)"
+            fi
+          no_output_timeout: 1h
+      - run:
+          name: older plot versions
+          command: |
+            echo "other versions at:"
+            echo
+            for i in $(seq 1 4); do
+              if [ $i -ne $WHICHPLOTS ]; then
+                if [ -f no-need-for-ggH-plots-$i ]; then
+                  cat no-need-for-ggH-plots-$i
+                else
+                  echo "plot set #$i has not been made yet for this version of the generator/MELA/plotting script."
+                  echo "to make it, set WHICHPLOTS in .circleci/config.yml to $i"
+                fi
+                echo
+              fi
+            done
+      - store_artifacts:
+          path: ~/artifacts/ggH
+      - run: echo "$CIRCLE_BUILD_URL" > no-need-for-ggH-plots-$WHICHPLOTS
+      - save_cache:
+          key: v2-ggH-do-i-need-analytic-plots-{{ .Environment.WHICHPLOTS }}-{{ checksum "analytical-md5sum" }}
+          paths: ~/test-ld-pyroot/no-need-for-ggH-plots-$WHICHPLOTS
+
+workflows:
+  version: 2
+  all-tests:
+    jobs:
+      - plots_ggH:
