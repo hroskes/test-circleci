@@ -21,14 +21,20 @@ jobs:
                 makeplot.py \
               | sort
             ) > analytical-md5sum
+            for i in {1..4}; do
+              (
+                cat analytical-md5sum
+                echo $i
+              ) > analytical-md5sum-$i
+            done
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-1-{{ checksum "analytical-md5sum" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-1" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-2-{{ checksum "analytical-md5sum" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-2" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-3-{{ checksum "analytical-md5sum" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-3" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-4-{{ checksum "analytical-md5sum" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-4" }}
       - run:
           name: "see if we need ggH analytical plots"
           command: |
@@ -54,7 +60,7 @@ jobs:
           command: |
             echo "other versions at:"
             echo
-            for i in $(seq 1 4); do
+            for i in {1..4}; do
               if [ $i -ne $WHICHPLOTS ]; then
                 if [ -f no-need-for-ggH-plots-$i ]; then
                   cat no-need-for-ggH-plots-$i
@@ -69,7 +75,7 @@ jobs:
           path: ~/artifacts/ggH
       - run: echo "$CIRCLE_BUILD_URL" > no-need-for-ggH-plots-$WHICHPLOTS
       - save_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ .Environment.WHICHPLOTS }}-{{ checksum "analytical-md5sum" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-$WHICHPLOTS" }}
           paths: ~/test-circleci/no-need-for-ggH-plots-$WHICHPLOTS
 
 workflows:
