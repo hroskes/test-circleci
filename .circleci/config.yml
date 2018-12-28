@@ -8,8 +8,9 @@ version: 2
 jobs:
   plots_ggH:
     <<: *env
-    working_directory: ~/test-ld-pyroot/.circleci
+    working_directory: ~/test-circleci/.circleci
     steps:
+      - checkout
       - run:
           name: "md5sum of files relevant for analytical plots"
           command: |
@@ -69,7 +70,7 @@ jobs:
       - run: echo "$CIRCLE_BUILD_URL" > no-need-for-ggH-plots-$WHICHPLOTS
       - save_cache:
           key: v2-ggH-do-i-need-analytic-plots-{{ .Environment.WHICHPLOTS }}-{{ checksum "analytical-md5sum" }}
-          paths: ~/test-ld-pyroot/no-need-for-ggH-plots-$WHICHPLOTS
+          paths: ~/test-circleci/no-need-for-ggH-plots-$WHICHPLOTS
 
 workflows:
   version: 2
