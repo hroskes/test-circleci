@@ -27,6 +27,7 @@ jobs:
                 echo $i
               ) > analytical-md5sum-$i
             done
+            cp analytical-md5sum-$WHICHPLOTS analytical-md5sum-theseplots
       - restore_cache:
           key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-1" }}
       - restore_cache:
@@ -75,7 +76,7 @@ jobs:
           path: ~/artifacts/ggH
       - run: echo "$CIRCLE_BUILD_URL" > no-need-for-ggH-plots-$WHICHPLOTS
       - save_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-$WHICHPLOTS" }}
+          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-theseplots" }}
           paths: ~/test-circleci/no-need-for-ggH-plots-$WHICHPLOTS
 
 workflows:
