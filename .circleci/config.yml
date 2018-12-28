@@ -29,13 +29,13 @@ jobs:
             done
             cp analytical-md5sum-$WHICHPLOTS analytical-md5sum-theseplots
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-1" }}
+          key: v3-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-1" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-2" }}
+          key: v3-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-2" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-3" }}
+          key: v3-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-3" }}
       - restore_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-4" }}
+          key: v3-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-4" }}
       - run:
           name: "see if we need ggH analytical plots"
           command: |
@@ -80,7 +80,7 @@ jobs:
             mkdir -p no-need-for-ggH-plots
             echo "$CIRCLE_BUILD_URL" > no-need-for-ggH-plots/$WHICHPLOTS
       - save_cache:
-          key: v2-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-theseplots" }}
+          key: v3-ggH-do-i-need-analytic-plots-{{ checksum "analytical-md5sum-theseplots" }}
           paths: ~/test-circleci/no-need-for-ggH-plots/
 
 workflows:
