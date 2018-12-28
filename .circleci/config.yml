@@ -8,13 +8,12 @@ version: 2
 jobs:
   plots_ggH:
     <<: *env
-    working_directory: ~/test-circleci/.circleci
+    working_directory: ~/test-circleci
     steps:
       - checkout
       - run:
           name: "md5sum of files relevant for analytical plots"
           command: |
-            cd ..
             #take the whole MELA C++ code because of interdependencies (TCouplingsBase etc.), too complicated to sort out
             #but no need for fortran or python
             md5sum  $(
@@ -42,6 +41,7 @@ jobs:
           name: plots
           command: |
             if $DOPLOTS; then
+              cd .circleci
               mkdir -p ~/artifacts/ggH
               python makeplot.py $WHICHPLOTS
               mv myplot.txt ~/artifacts/ggH
